@@ -41,6 +41,7 @@ type NotificationRecipient struct {
 	Name           string             `json:"name,omitempty" bson:"name,omitempty"`
 	EmailAddress   string             `json:"emailAddress,omitempty" bson:"emailAddress,omitempty"`
 	PhoneNumber    string             `json:"phoneNumber,omitempty" bson:"phoneNumber,omitempty"`
+	Params         []string           `json:"params,omitempty" bson:"params,omitempty"`
 	Status         string             `json:"status,omitempty" bson:"status,omitempty"`
 	SendAt         time.Time          `json:"sendAt,omitempty" bson:"sendAt,omitempty"`
 }
@@ -248,10 +249,11 @@ func (s *basicService) CreateNotification(
 	errs := make(chan error)
 	go func() {
 		c := make(chan os.Signal)
-		for _, recipient := range recipients {
+		for i, recipient := range recipients {
 			messg := body
-			messg = strings.ReplaceAll(messg, "{NAME}", recipient.Name)
-			messg = strings.ReplaceAll(messg, "{PHONE_NUMBER}", recipient.PhoneNumber)
+			messg = strings.ReplaceAll(messg, "{name}", recipient.Name)
+			messg = strings.ReplaceAll(messg, "{phone_number}", recipient.PhoneNumber)
+			messg = utils.ReplaceBodyParams(messg, recipients[i].Params)
 
 			pushNotifToPhoneNumber(queueName, recipient.PhoneNumber, messg)
 		}
