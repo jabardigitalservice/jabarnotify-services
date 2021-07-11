@@ -145,6 +145,7 @@ func decodeImportNotifRequest(_ context.Context, r *http.Request) (request inter
 			recipients = append(recipients, &NotificationRecipient{
 				Name:        row[0],
 				PhoneNumber: row[1],
+				Params:      row[2:],
 			})
 		}
 	}
