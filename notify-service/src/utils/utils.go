@@ -9,6 +9,7 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
+	"strings"
 	"time"
 
 	"github.com/360EntSecGroup-Skylar/excelize/v2"
@@ -55,6 +56,17 @@ func CleanPhoneNumber(phoneNumber string) string {
 	re := regexp.MustCompile("^0{1}")
 
 	return re.ReplaceAllString(phoneNumber, "62")
+}
+
+// ReplaceBodyParams func
+func ReplaceBodyParams(body string, params []string) string {
+
+	for i := 0; i < len(params); i++ {
+		param, value := fmt.Sprintf("{param%v}", i+1), params[i]
+		body = strings.ReplaceAll(body, param, value)
+	}
+
+	return body
 }
 
 // ExtractSheet func
