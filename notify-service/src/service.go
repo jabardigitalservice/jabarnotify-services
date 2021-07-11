@@ -239,6 +239,7 @@ func (s *basicService) CreateNotification(
 			Name:           recipient.Name,
 			EmailAddress:   recipient.EmailAddress,
 			PhoneNumber:    recipient.PhoneNumber,
+			Params:         recipient.Params,
 			Status:         "sent",
 		}
 		notificationRecipients = append(notificationRecipients, recipient)
@@ -249,11 +250,11 @@ func (s *basicService) CreateNotification(
 	errs := make(chan error)
 	go func() {
 		c := make(chan os.Signal)
-		for i, recipient := range recipients {
+		for _, recipient := range recipients {
 			messg := body
 			messg = strings.ReplaceAll(messg, "{name}", recipient.Name)
 			messg = strings.ReplaceAll(messg, "{phone_number}", recipient.PhoneNumber)
-			messg = utils.ReplaceBodyParams(messg, recipients[i].Params)
+			messg = utils.ReplaceBodyParams(messg, recipient.Params)
 
 			pushNotifToPhoneNumber(queueName, recipient.PhoneNumber, messg)
 		}
